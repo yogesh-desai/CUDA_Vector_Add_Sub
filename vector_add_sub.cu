@@ -11,22 +11,14 @@ using namespace std;
 //Global functions
 __global__ void AddIntsCUDA(int *a, int *b)
 {
-	//for(int i=0;i<size;i++)
-	//{
 	int tid=blockIdx.x*blockDim.x+threadIdx.x;
 	a[tid] = a[tid] + b[tid];
-
-	//}
 }
-__global__ void SubIntsCUDA(int *a, int *b)
 
+__global__ void SubIntsCUDA(int *a, int *b)
 {
-	//for(int i=0;i<size;i++)
-	//{
 	int tid=blockIdx.x*blockDim.x+threadIdx.x;
 	b[tid] = a[tid] - b[tid];
-
-	//}
 }
 //********************************************************
 int main()
@@ -37,6 +29,7 @@ int main()
 	//Allocation of Device variables
 	cudaMalloc((void **)&d_a, sizeof(int)*size);
 	cudaMalloc((void **)&d_b, sizeof(int)*size);
+
 	//Copy Host Memory to Device Memory
 	cudaMemcpy(d_a, &a, sizeof(int)*size, cudaMemcpyHostToDevice);
 	cudaMemcpy(d_b, &b, sizeof(int)*size, cudaMemcpyHostToDevice);
@@ -52,6 +45,7 @@ int main()
 	{
 		printf("a[%d]=%d\n",i,a[i]);
 	}
+
 	//Deallocate the Device Memory and Host Memory
 	cudaFree(d_a);
 	cudaFree(d_b);
