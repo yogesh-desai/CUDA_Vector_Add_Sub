@@ -1,10 +1,14 @@
-
+/*Title: Vector addition and subtraction in CUDA.
+A simple way to understand how CUDA can be used to perform arithmetic operations.
+*/
 #include<iostream>
 #include<stdio.h>
 #include<cuda.h>
 #include<cuda_runtime_api.h>
 using namespace std;
 # define size 5
+
+//Global functions
 __global__ void AddIntsCUDA(int *a, int *b)
 {
 	//for(int i=0;i<size;i++)
@@ -24,55 +28,35 @@ __global__ void SubIntsCUDA(int *a, int *b)
 
 	//}
 }
-
+//********************************************************
 int main()
 {
-	int a[size]={1,2,3,4,5}, b[size]={1,2,3,4,5};
+	int a[size]={1,2,3,4,5}, b[size]={1,2,3,4,5}; //Vector Declaration and Definition
 	int *d_a, *d_b;
 
+	//Allocation of Device variables
 	cudaMalloc((void **)&d_a, sizeof(int)*size);
 	cudaMalloc((void **)&d_b, sizeof(int)*size);
+	//Copy Host Memory to Device Memory
 	cudaMemcpy(d_a, &a, sizeof(int)*size, cudaMemcpyHostToDevice);
 	cudaMemcpy(d_b, &b, sizeof(int)*size, cudaMemcpyHostToDevice);
-
+	
+	//Launch Kernel
 	AddIntsCUDA << <2,3 >> >(d_a, d_b);
-
+	
+	//Copy Device Memory to Host Memory
 	cudaMemcpy(&a, d_a, sizeof(int)*size, cudaMemcpyDeviceToHost);
-
 
 	cout << "The answer is "<<endl;
 	for(int i=0;i<size;i++)
 	{
 		printf("a[%d]=%d\n",i,a[i]);
 	}
+	//Deallocate the Device Memory and Host Memory
 	cudaFree(d_a);
 	cudaFree(d_b);
 	free(a);
 	free(b);
 
-	/*int a[size]={1,2,3,4,5}, b[size]={1,2,3,4,5};
-
-	cudaMalloc((void **)&d_a, sizeof(int)*size);
-	cudaMalloc((void **)&d_b, sizeof(int)*size);
-	cudaMemcpy(d_a, &a, sizeof(int)*size, cudaMemcpyHostToDevice);
-	cudaMemcpy(d_b, &b, sizeof(int)*size, cudaMemcpyHostToDevice);
-
-	SubIntsCUDA << <2,3 >> >(d_a, d_b);
-	cudaMemcpy(&b, d_b, sizeof(int)*size, cudaMemcpyDeviceToHost);
-	cout << "\nThe Subtraction is "<<endl;
-		for(int i=0;i<size;i++)
-		{
-			printf("b[%d]=%d\n",i,b[i]);
-		}
-*
-	cudaFree(d_a);
-	cudaFree(d_b);
-
-*/
-
-//	AddIntsCUDA << <1, 1 >> >(d_a, d_b);
-
-
 	return 0;
 }
-
